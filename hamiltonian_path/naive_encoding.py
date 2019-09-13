@@ -10,20 +10,38 @@
 # 1. Add AMO constraint function
 #   - Takes a set of variables as input and appends clauses to the main output vector.
 # 2. Add ALO constraint function
-#   - Takes a set of variables as input and appends the clause to the main output vector.
 
 import sys
 
-def AMO():
-    print("In AMO function")
 
-def ALO():
-    print("In ALO function")
+def AMO(var):
+    temp_cnf = []
+    # just an example appending for now
+    for i in var:
+        temp_cnf.append(i)
+    cnf_output.append(temp_cnf)
+
+
+# Takes a set of variables as input and appends the clause to the main output vector.
+def ALO(var):
+    cnf_output.append(var)
+
+def var_map(i,j,N):
+    return ((i-1)*N + j)
+
+cnf_output = []
 
 def main(argv):
-    print("N = "+sys.argv[1])
-    AMO()
-    ALO()
+    N = int(sys.argv[1])
+    print("N = "+str(N))
+    # AMO([1,2])
+    # ALO([1,2])
+    for i in range(1,N+1):
+        temp_var = []
+        for j in range(1,N+1):
+            temp_var.append(var_map(i,j,N))
+        ALO(temp_var)
+    print(cnf_output)
 
 if __name__ == "__main__":
    main(sys.argv[1:])
