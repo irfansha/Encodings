@@ -51,8 +51,14 @@ def convert(lst):
     return ' '.join(s)
 
 
-def print_cnf():
+def print_cnf(opt):
     print("p cnf " + str(N * N) + " " + str(len(cnf_output)))
+    if (opt == "q"):
+        st = "e "
+        for i in range(1, N*N+1):
+          st += str(i) + " "
+        st += "0"
+        print(st)
     for line in cnf_output:
         print(convert(line))
 
@@ -62,41 +68,47 @@ cnf_output = []
 
 
 def main(argv):
-    path = sys.argv[1]
-    # print("N = "+str(N))
-    adj_list = f_read(path)
-    # print(adj_list)
+    if (len(sys.argv) != 3):
+        print("Use command: python naive_encoding.py [path-to-input-graph] [s/q]")
+        print("s: for SAT encoding and q for QBF encoding")
+    else:
+      path = sys.argv[1]
+      option = sys.argv[2]
+      # print(option)
+      # print("N = "+str(N))
+      adj_list = f_read(path)
+      # print(adj_list)
 
-    # Exactly one node each turn:
-    for i in range(1, N + 1):
+      # Exactly one node each turn:
+      for i in range(1, N + 1):
         temp_var = []
         for j in range(1, N + 1):
             temp_var.append(var_map(i, j))
         AMO(temp_var)
 
-    for i in range(1, N + 1):
+      for i in range(1, N + 1):
         temp_var = []
         for j in range(1, N + 1):
             temp_var.append(var_map(i, j))
         ALO(temp_var)
 
-    # Visit every vertex only once:
-    for j in range(1, N + 1):
+      # Visit every vertex only once:
+      for j in range(1, N + 1):
         temp_var = []
         for i in range(1, N + 1):
             temp_var.append(var_map(i, j))
         AMO(temp_var)
 
-    for j in range(1, N + 1):
+      for j in range(1, N + 1):
         temp_var = []
         for i in range(1, N + 1):
             temp_var.append(var_map(i, j))
         ALO(temp_var)
 
-    # Edge constraints:
-    for ver in adj_list:
+      # Edge constraints:
+      for ver in adj_list:
         edg_con(ver)
-    print_cnf()
+      print_cnf(option)
 
 
 if __name__ == "__main__":
