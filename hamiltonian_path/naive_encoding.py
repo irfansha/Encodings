@@ -4,6 +4,8 @@
 # Todos:
 # 1. Check for test cases or benchmarks provided.
 # 2. Handle other formats of graph inputs.
+# 3. Add sample testcases.
+# 4. Update comments.
 
 import sys
 
