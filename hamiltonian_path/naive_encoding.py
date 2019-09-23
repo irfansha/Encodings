@@ -4,8 +4,9 @@
 # Todos:
 # 1. Check for test cases or benchmarks provided.
 # 2. Handle other formats of graph inputs.
-# 3. Add sample testcases.
+# 3. Add sample testcases for hamiltonian cycle.
 # 4. Update comments.
+# 5. Update encoding for hamiltonian cycle.
 
 # Use command: python naive_encoding.py [path-to-input-graph] [s/q]
 # Example:
@@ -56,7 +57,7 @@ def convert(lst):
     s = [str(i) for i in lst]
     return ' '.join(s)
 
-# print the constraints in cnf format:
+# print the constraints in dimacs/qdimacs based on the option provided:
 def print_cnf(opt):
     print("p cnf " + str(N * N) + " " + str(len(cnf_output)))
     if (opt == "q"):
