@@ -7,8 +7,13 @@
 # 3. Add sample testcases.
 # 4. Update comments.
 
+# Use command: python naive_encoding.py [path-to-input-graph] [s/q]
+# Example:
+# python naive_encoding.py ./sample_testcases/test_hamiltonian_yes.txt s > hamiltonian_encoding_yes
+
 import sys
 
+# Reads from file and returns adjacency list:
 def f_read(path):
     f = open(path, "r")
     f1 = f.readlines()
@@ -21,19 +26,18 @@ def f_read(path):
         temp_list.append(line)
     return temp_list
 
-
+# AtMostOne constraints for every pair of variables:
 def AMO(var):
-    # just an example appending for now
     for i in range(0, len(var)):
         for j in range(i + 1, len(var)):
             cnf_output.append([-var[i], -var[j], 0])
 
-
-# Takes a set of variables as input and appends the clause to the main output vector.
+# AtLeastOne constraint for the set of variables:
 def ALO(var):
     var.append(0)
     cnf_output.append(var)
 
+# Constraints for adjacent nodes of different levels:
 def edg_con(lst):
     inv = int(lst.pop(0))
     for i in range(1,N):
@@ -43,16 +47,16 @@ def edg_con(lst):
         temp_clause.append(0)
         cnf_output.append(temp_clause)
 
-
+# Mapping variables with level i and node j to single integer:
 def var_map(i, j):
     return ((i - 1) * N + j)
 
-
+# Joining variables in each constraint for cnf format:
 def convert(lst):
     s = [str(i) for i in lst]
     return ' '.join(s)
 
-
+# print the constraints in cnf format:
 def print_cnf(opt):
     print("p cnf " + str(N * N) + " " + str(len(cnf_output)))
     if (opt == "q"):
@@ -64,8 +68,11 @@ def print_cnf(opt):
     for line in cnf_output:
         print(convert(line))
 
+# Number of nodes
 N = 0
+# Number of edges
 E = 0
+# List for final cnf output:
 cnf_output = []
 
 
@@ -76,19 +83,19 @@ def main(argv):
     else:
       path = sys.argv[1]
       option = sys.argv[2]
-      # print(option)
-      # print("N = "+str(N))
+      # Read adjacency list from file:
       adj_list = f_read(path)
-      # print(adj_list)
 
       # Exactly one node each turn:
       for i in range(1, N + 1):
+        # AtMostOne constraints for each level:
         temp_var = []
         for j in range(1, N + 1):
             temp_var.append(var_map(i, j))
         AMO(temp_var)
 
       for i in range(1, N + 1):
+        # AtLeastOne constraints for each level:
         temp_var = []
         for j in range(1, N + 1):
             temp_var.append(var_map(i, j))
