@@ -6,11 +6,10 @@
 # 2. Handle other formats of graph inputs.
 # 3. Add sample testcases for hamiltonian cycle.
 # 4. Update comments.
-# 5. Update encoding for hamiltonian cycle.
 
-# Use command: python naive_encoding.py [path-to-input-graph] [s/q]
+# Use command: python naive_encoding.py [path-to-input-graph] [p/c] [s/q]
 # Example:
-# python naive_encoding.py ./sample_testcases/test_hamiltonian_yes.txt s > hamiltonian_encoding_yes
+# python naive_encoding.py ./sample_testcases/test_hamiltonian_yes.txt p s > hamiltonian_encoding_path_yes
 
 import sys
 
@@ -38,8 +37,8 @@ def ALO(var):
     var.append(0)
     cnf_output.append(var)
 
-# Constraints for adjacent nodes of different levels:
-def edg_con(lst):
+# Constraints for adjacent nodes of different levels for path:
+def edg_con_path(lst):
     inv = int(lst.pop(0))
     for i in range(1,N):
         temp_clause = [-var_map(i, inv)]
@@ -47,6 +46,21 @@ def edg_con(lst):
             temp_clause.append(var_map(i+1,int(outv)))
         temp_clause.append(0)
         cnf_output.append(temp_clause)
+
+# Constraints for adjacent nodes of different levels for cycle:
+def edg_con_cycle(lst):
+    inv = int(lst.pop(0))
+    for i in range(1,N):
+        temp_clause = [-var_map(i, inv)]
+        for outv in lst:
+            temp_clause.append(var_map(i+1,int(outv)))
+        temp_clause.append(0)
+        cnf_output.append(temp_clause)
+    # Additional edge to complete the cycle:
+    temp_clause = [-var_map(N, inv)]
+    temp_clause.extend(lst)
+    temp_clause.append(0)
+    cnf_output.append(temp_clause)
 
 # Mapping variables with level i and node j to single integer:
 def var_map(i, j):
@@ -78,12 +92,16 @@ cnf_output = []
 
 
 def main(argv):
-    if (len(sys.argv) != 3):
-        print("Use command: python naive_encoding.py [path-to-input-graph] [s/q]")
+    if (len(sys.argv) != 4):
+        print("Use command: python naive_encoding.py [path-to-input-graph] [p/c] [s/q]")
+        print("p: Hamiltonian path and c for Hamiltonian cycle")
         print("s: for SAT encoding and q for QBF encoding")
     else:
       path = sys.argv[1]
-      option = sys.argv[2]
+      # Option for path or cycle:
+      path_cycle_opt = sys.argv[2]
+      # Encoding option:
+      encd_opt = sys.argv[3]
       # Read adjacency list from file:
       adj_list = f_read(path)
 
@@ -117,8 +135,11 @@ def main(argv):
 
       # Edge constraints:
       for ver in adj_list:
-        edg_con(ver)
-      print_cnf(option)
+        if (path_cycle_opt == 'p'):
+          edg_con_path(ver)
+        else:
+          edg_con_cycle(ver)
+      print_cnf(encd_opt)
 
 
 if __name__ == "__main__":
