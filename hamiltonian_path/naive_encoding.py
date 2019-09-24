@@ -97,49 +97,49 @@ def main(argv):
         print("p: Hamiltonian path and c for Hamiltonian cycle")
         print("s: for SAT encoding and q for QBF encoding")
     else:
-      path = sys.argv[1]
-      # Option for path or cycle:
-      path_cycle_opt = sys.argv[2]
-      # Encoding option:
-      encd_opt = sys.argv[3]
-      # Read adjacency list from file:
-      adj_list = f_read(path)
+        path = sys.argv[1]
+        # Option for path or cycle:
+        path_cycle_opt = sys.argv[2]
+        # Encoding option:
+        encd_opt = sys.argv[3]
+        # Read adjacency list from file:
+        adj_list = f_read(path)
 
-      # Exactly one node each turn:
-      for i in range(1, N + 1):
-        # AtMostOne constraints for each level:
-        temp_var = []
-        for j in range(1, N + 1):
-            temp_var.append(var_map(i, j))
-        AMO(temp_var)
-
-      for i in range(1, N + 1):
-        # AtLeastOne constraints for each level:
-        temp_var = []
-        for j in range(1, N + 1):
-            temp_var.append(var_map(i, j))
-        ALO(temp_var)
-
-      # Visit every vertex only once:
-      for j in range(1, N + 1):
-        temp_var = []
+        # Exactly one node each turn:
         for i in range(1, N + 1):
-            temp_var.append(var_map(i, j))
-        AMO(temp_var)
+            # AtMostOne constraints for each level:
+            temp_var = []
+            for j in range(1, N + 1):
+                temp_var.append(var_map(i, j))
+            AMO(temp_var)
 
-      for j in range(1, N + 1):
-        temp_var = []
         for i in range(1, N + 1):
-            temp_var.append(var_map(i, j))
-        ALO(temp_var)
+            # AtLeastOne constraints for each level:
+            temp_var = []
+            for j in range(1, N + 1):
+                temp_var.append(var_map(i, j))
+            ALO(temp_var)
 
-      # Edge constraints:
-      for ver in adj_list:
-        if (path_cycle_opt == 'p'):
-          edg_con_path(ver)
-        else:
-          edg_con_cycle(ver)
-      print_cnf(encd_opt)
+        # Visit every vertex only once:
+        for j in range(1, N + 1):
+            temp_var = []
+            for i in range(1, N + 1):
+                temp_var.append(var_map(i, j))
+            AMO(temp_var)
+
+        for j in range(1, N + 1):
+            temp_var = []
+            for i in range(1, N + 1):
+                temp_var.append(var_map(i, j))
+            ALO(temp_var)
+
+        # Edge constraints:
+        for ver in adj_list:
+            if (path_cycle_opt == 'p'):
+                edg_con_path(ver)
+            else:
+                edg_con_cycle(ver)
+        print_cnf(encd_opt)
 
 
 if __name__ == "__main__":
